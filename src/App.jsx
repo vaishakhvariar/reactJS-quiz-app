@@ -1,14 +1,19 @@
 import './App.css'
-import TopicSelection from './assets/TopicSelection'
+// import { Routes, Route } from 'react-router-dom';
+import TopicSelection from './components/TopicSelection';
+// import Quiz from './components/Quiz';
 
 function App() {
-
   return (
-    <div className='App'>
-      <TopicSelection  />
-    </div>
 
-  )
+    <div>
+      <TopicSelection />
+    </div>
+    // <Routes>
+    //   <Route path="/" element={<TopicSelection />} />
+    //   <Route path="/quiz" element={<Quiz />} />
+    // </Routes>
+  );
 }
 
-export default App
+export default App;

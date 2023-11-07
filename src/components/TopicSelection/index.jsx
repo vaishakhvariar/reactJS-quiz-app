@@ -1,33 +1,31 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import './index.css';
+import Quiz from '../Quiz';
 
 const TopicSelection = () => {
 
     // const [quiz, setQuiz] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(''); 
     const [selectedDifficulty, setSelectedDifficulty] = useState(''); 
-    const [loading, setLoading] = useState(true);
+    const [selection, setSelection] = useState([]);
+    // const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const apiKey = 'PaM9NATVEd1imVikLrcE3UyGPvDFxYdA6Sx2Vug9';
-        const apiUrl = 'https://quizapi.io/api/v1/questions';
+    // useEffect(() => {
+    //     const apiKey = 'PaM9NATVEd1imVikLrcE3UyGPvDFxYdA6Sx2Vug9';
+    //     const apiUrl = 'https://quizapi.io/api/v1/questions';
 
-        fetch(`${apiUrl}?apiKey=${apiKey}`)
-        .then((response) => response.json())
-        .then((data)=>{
-            console.log(data);
-            // console.log(typeof data);
-            setLoading(false);
-        })
-        .catch(error => {
-            console.error(error);
-            setLoading(false);            
-        });
-    }, []);
-
-    if(loading) {
-        return <div>Loading...</div>
-    }
+    //     fetch(`${apiUrl}?apiKey=${apiKey}`)
+    //     .then((response) => response.json())
+    //     .then((data)=>{
+    //         console.log(data);
+    //         // console.log(typeof data);
+    //         setLoading(false);
+    //     })
+    //     .catch(error => {
+    //         console.error(error);
+    //         setLoading(false);            
+    //     });
+    // }, []);
 
     const handleCategoryChange = (event) => {
       setSelectedCategory(event.target.value);
@@ -39,9 +37,13 @@ const TopicSelection = () => {
   
     const handleQuizStart = (event) => {
       event.preventDefault();
-      console.log('Selected Category:', selectedCategory);
-      console.log('Selected Difficulty:', selectedDifficulty);
+      setSelection([selectedCategory,selectedDifficulty]);
+      console.log('Select1', selection)
     };
+
+    useEffect(() => {
+        console.log('Selection:', selection);
+      }, [selection]); 
 
 
     return (
@@ -52,9 +54,9 @@ const TopicSelection = () => {
                 <label htmlFor="category">Select Category:</label>
                 <select id="category" value={selectedCategory} onChange={handleCategoryChange}>
                     <option value="">Select a category</option>
-                    <option value="1">Category 1</option>
-                    <option value="2">Category 2</option>
-                    {/* Add more category options */}
+                    <option value="Linux">Linux</option>
+                    <option value="DevOps">DevOps</option>
+                    <option value='JavaScript'>JavaScript</option>
                 </select>
                 </div>
                 <div>
@@ -69,6 +71,7 @@ const TopicSelection = () => {
 
                 <button type="submit">Start Quiz</button>
             </form>
+            <Quiz selection={selection} />
         </div>
     )
 

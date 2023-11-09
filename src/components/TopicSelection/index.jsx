@@ -56,7 +56,7 @@ const TopicSelection = () => {
                     <option value="">Select a category</option>
                     <option value="Linux">Linux</option>
                     <option value="DevOps">DevOps</option>
-                    <option value='JavaScript'>JavaScript</option>
+                    <option value='Javascript'>JavaScript</option>
                 </select>
                 </div>
                 <div>

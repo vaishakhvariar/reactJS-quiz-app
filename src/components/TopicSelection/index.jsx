@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './index.css';
 import Quiz from '../Quiz';
 
@@ -8,24 +8,7 @@ const TopicSelection = () => {
     const [selectedCategory, setSelectedCategory] = useState(''); 
     const [selectedDifficulty, setSelectedDifficulty] = useState(''); 
     const [selection, setSelection] = useState([]);
-    // const [loading, setLoading] = useState(true);
 
-    // useEffect(() => {
-    //     const apiKey = 'PaM9NATVEd1imVikLrcE3UyGPvDFxYdA6Sx2Vug9';
-    //     const apiUrl = 'https://quizapi.io/api/v1/questions';
-
-    //     fetch(`${apiUrl}?apiKey=${apiKey}`)
-    //     .then((response) => response.json())
-    //     .then((data)=>{
-    //         console.log(data);
-    //         // console.log(typeof data);
-    //         setLoading(false);
-    //     })
-    //     .catch(error => {
-    //         console.error(error);
-    //         setLoading(false);            
-    //     });
-    // }, []);
 
     const handleCategoryChange = (event) => {
       setSelectedCategory(event.target.value);
@@ -37,14 +20,11 @@ const TopicSelection = () => {
   
     const handleQuizStart = (event) => {
       event.preventDefault();
+      if(selectedCategory&&selectedDifficulty){
       setSelection([selectedCategory,selectedDifficulty]);
+      }
       console.log('Select1', selection)
     };
-
-    useEffect(() => {
-        console.log('Selection:', selection);
-      }, [selection]); 
-
 
     return (
         <div className='quiz-container'>

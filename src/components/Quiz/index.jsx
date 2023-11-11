@@ -2,11 +2,15 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
+
 const Quiz = ({selection}) => {
 
     const [quiz, setQuiz] = useState([]);
     const [currentQIndex, setCurrentQIndex] = useState(0);
     const [category, difficulty] = selection;
+    const [selectedOptions, setSelectedOptions] = useState([]);
+    const [showVerifyAnswer, setShowVerifyAnswer] = useState(false);
+    const [score, setScore] = useState(0);
 
     const api_data = (data) => {
         const new_data = [];
@@ -35,9 +39,7 @@ const Quiz = ({selection}) => {
                 const newData = api_data(data);
                 // console.log(newData);
                 setQuiz(newData);
-                // console.log(quiz[1].question)
             }
-            // console.log(typeof data);
 
         })
         .catch(error => {
@@ -48,35 +50,83 @@ const Quiz = ({selection}) => {
 
     const handleNextQuestion = () => {
         setCurrentQIndex((prevIndex)=>prevIndex+1);
+        setSelectedOptions([]);
+        setShowVerifyAnswer(false);
     }
 
-    // const Options = (props) => {
-    //         props.options.forEach(([key, value]) => {
-                
-    //           })
-    // }
+    const handleOptionChange = (optionValue) => {
+        setSelectedOptions ((prevSelected) => {
+            if(prevSelected.includes(optionValue)){
+                return prevSelected.filter((value) => value !== optionValue);
+            } else {
+                return [...prevSelected, optionValue];
+            }
+        });
+    }
+
+    const handleSubmitButton = (event) => {
+        event.preventDefault();
+        console.log('Selected Options:', selectedOptions); 
+        setShowVerifyAnswer(true);       
+    }
+
+    useEffect(()=>{
+        if(showVerifyAnswer&&selectedOptions.every((item)=>(quiz[currentQIndex].answers).includes(item))) {
+            setScore((prevScore) => {
+                return prevScore+1;
+            }
+            );
+        }
+    },[showVerifyAnswer, selectedOptions, quiz, currentQIndex])
+
+    const VerifyAnswer = () => {
+
+        if(!showVerifyAnswer) {
+            return;
+        }
+        if(selectedOptions.every((item)=>(quiz[currentQIndex].answers).includes(item))){
+            return (
+                <div>
+                    <p>You answered correctly</p>
+                    <p>Current total: {score}</p>
+                    <p>Questions so far: {currentQIndex+1}</p>
+                </div>
+            );
+        }else{
+            return (
+                <div>
+                    <p>Your answer is incorrect</p>
+                    <p>Current total: {score}</p>
+                    <p>Questions so far: {currentQIndex+1}</p>
+                </div>
+            )
+        }
+    }
 
 
     return (
       <div>
-        {/* {quiz.length&&quiz[0]?<p>True and also {quiz[0].id}</p>:<p>No values</p>} */}
         {quiz.length?(
             <div>
                 <p>{quiz[currentQIndex].id}</p>
                 <p>{quiz[currentQIndex].question}</p>
-                <ul>{quiz[currentQIndex].options.map((option, index) => (
-                    <li key={option[0] }>{index}{option[1]}</li>
+                <ul>{quiz[currentQIndex].options.filter(item => item[1]).map((option, index) => (
+                    <li key={option[0] }>
+                        <input 
+                        type='checkbox' 
+                        id={option[0]} 
+                        value={option[1]}
+                        checked={selectedOptions.includes(option[0])}
+                        onChange={() => {
+                            handleOptionChange(option[0]); 
+                        }} />
+                        <label htmlFor={option[0]}>{index+1} {option[1]}</label>
+                    </li>
                 ))}</ul>
-                {/* <p>{}</p> */}
-                <button onClick={handleNextQuestion}>Next</button>
+                <button onClick={handleSubmitButton}>Submit</button>
+                <VerifyAnswer />
+                <button disabled={!showVerifyAnswer} onClick={handleNextQuestion}>Next</button>
             </div>
-        // <p>
-        //     {quiz.map((question, index)=> (
-        //     <div key={index}>
-        //             <p>{question.id}</p>
-        //             <p>{question.question}</p>
-        //     </div>
-        // ))}</p>
         )
         :(<p>No values</p>)
         }
@@ -87,7 +137,9 @@ const Quiz = ({selection}) => {
 
   Quiz.propTypes = {
     selection: PropTypes.array.isRequired,
-    // selection: PropTypes.array.isRequired;
+
   };
+
+
 
 export default Quiz;

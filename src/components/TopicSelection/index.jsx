@@ -41,6 +41,9 @@ const TopicSelection = () => {
                     <option value="Linux">Linux</option>
                     <option value="SQL">SQL</option>
                     <option value="DevOps">DevOps</option>
+                    <option value="Code">Code</option>
+                    <option value="Docker">Docker</option>
+                    <option value="Uncategorized">Uncategorised</option>
                     {/* <option value='Javascript'>JavaScript</option> */}
                 </StyledSelect>
                 </FormGroup>
@@ -64,21 +67,20 @@ const TopicSelection = () => {
 }
 
 const CardContainer = styled.div`
-  border: 1px solid #fff;
-  border-radius: 10px;
-  background-color:#4caf50;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+border: 1px solid #fff;
+border-radius: 10px;
+background-color:#4caf50;
+padding: 20px;
+margin-bottom: 20px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
-
 const FormGroup = styled.div`
   margin-bottom: 15px;
 `;
 
 const StyledSelect = styled.select`
   width: 100%;
-  padding: 10px;
+  padding: 20px;
   border: 1px solid #ccc;
   background-color: #5ac26b;
   border-radius: 5px;
@@ -97,7 +99,7 @@ const StyledSelect = styled.select`
 const StartButton = styled.button`
   background-color: #5ac26b;
   color: white;
-  padding: 10px 20px;
+  padding: 15px 25px;
   border: none;
   border-radius: 5px;
   cursor: pointer;

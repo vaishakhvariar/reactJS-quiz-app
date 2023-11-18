@@ -35,7 +35,7 @@ const Quiz = () => {
         const apiUrl = 'https://quizapi.io/api/v1/questions';
         if(category&&difficulty){
 
-        fetch(`${apiUrl}?apiKey=${apiKey}&difficulty=${difficulty}&category=${category}&limit=5`)
+        fetch(`${apiUrl}?apiKey=${apiKey}&difficulty=${difficulty}&category=${category}&limit=10`)
         .then((response) => response.json())
         .then((data)=>{
             if(data){

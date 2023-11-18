@@ -1,13 +1,17 @@
 // import './index.css';
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useParams } from 'react-router-dom';
+import styled from 'styled-components';
 
 
-const Quiz = ({selection}) => {
+const Quiz = () => {
 
     const [quiz, setQuiz] = useState([]);
     const [currentQIndex, setCurrentQIndex] = useState(0);
-    const [category, difficulty] = selection;
+    const {category, difficulty} = useParams();
+    console.log('Category:', category);
+    console.log('Difficulty:', difficulty);
     const [selectedOptions, setSelectedOptions] = useState([]);
     const [showVerifyAnswer, setShowVerifyAnswer] = useState(false);
     const [score, setScore] = useState(0);
@@ -29,9 +33,9 @@ const Quiz = ({selection}) => {
     useEffect(() => {
         const apiKey = 'PaM9NATVEd1imVikLrcE3UyGPvDFxYdA6Sx2Vug9';
         const apiUrl = 'https://quizapi.io/api/v1/questions';
-        if(selection.length){
+        if(category&&difficulty){
 
-        fetch(`${apiUrl}?apiKey=${apiKey}&difficulty=${difficulty}&category=${category}`)
+        fetch(`${apiUrl}?apiKey=${apiKey}&difficulty=${difficulty}&category=${category}&limit=5`)
         .then((response) => response.json())
         .then((data)=>{
             if(data){
@@ -46,7 +50,7 @@ const Quiz = ({selection}) => {
             console.error(error);          
         });
     }
-    }, [category, difficulty, selection.length]);
+    }, [category, difficulty]);
 
     const handleNextQuestion = () => {
         setCurrentQIndex((prevIndex)=>prevIndex+1);
@@ -105,14 +109,14 @@ const Quiz = ({selection}) => {
 
 
     return (
-      <div>
-        {quiz.length?(
-            <div>
-                <p>{quiz[currentQIndex].id}</p>
-                <p>{quiz[currentQIndex].question}</p>
-                <ul>{quiz[currentQIndex].options.filter(item => item[1]).map((option, index) => (
-                    <li key={option[0] }>
-                        <input 
+      <QuizContainer>
+        {currentQIndex < quiz.length ? (
+            <CardContainer>
+                {/* <p>{quiz[currentQIndex].id}</p> */}
+                <Question>{quiz[currentQIndex].question}</Question>
+                <OptionList>{quiz[currentQIndex].options.filter(item => item[1]).map((option, index) => (
+                    <OptionItem key={option[0] }>
+                        <OptionCheckbox
                         type='checkbox' 
                         id={option[0]} 
                         value={option[1]}
@@ -121,25 +125,80 @@ const Quiz = ({selection}) => {
                             handleOptionChange(option[0]); 
                         }} />
                         <label htmlFor={option[0]}>{index+1} {option[1]}</label>
-                    </li>
-                ))}</ul>
-                <button onClick={handleSubmitButton}>Submit</button>
+                    </OptionItem>
+                ))}</OptionList>
+                <SubmitButton onClick={handleSubmitButton}>Submit</SubmitButton>
                 <VerifyAnswer />
-                <button disabled={!showVerifyAnswer} onClick={handleNextQuestion}>Next</button>
-            </div>
-        )
-        :(<p>No values</p>)
+                <SubmitButton disabled={!showVerifyAnswer} onClick={handleNextQuestion}>Next</SubmitButton>
+            </CardContainer>
+        ):(<ResultContainer>
+            <h1>End of Quiz</h1>
+            <h2>Your final score is: {score}</h2>
+            <h2>Total number of questions: {currentQIndex}</h2>
+            </ResultContainer>)
         }
 
-      </div>
+      </QuizContainer>
     );
   };
 
   Quiz.propTypes = {
-    selection: PropTypes.array.isRequired,
-
+    category: PropTypes.string.isRequired,
+    difficulty: PropTypes.string.isRequired
   };
 
+
+  const QuizContainer = styled.div`
+  padding: 20px;
+`;
+
+const CardContainer = styled.div`
+  border: 1px solid #fff;
+  border-radius: 10px;
+  background-color:#4caf50;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+`;
+
+const Question = styled.p`
+  font-size: 18px;
+  margin-bottom: 10px;
+  padding: 15px;
+  border: 1px solid #fff;
+  border-radius: 5px;
+`;
+
+const OptionList = styled.ul`
+  list-style-type: none;
+  padding: 0;
+  text-align: left;
+`;
+
+const OptionItem = styled.li`
+  margin-bottom: 10px;
+`;
+const OptionCheckbox = styled.input`
+  margin-right: 10px;
+`;
+
+const SubmitButton = styled.button`
+  background-color: #5ac26b;
+  color: white;
+  padding: 10px;
+  margin: 10px;
+  cursor: pointer;
+  border: none;
+`;
+
+const ResultContainer = styled.div`
+  margin-top: 20px;
+  border: 1px solid #fff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+`;
 
 
 export default Quiz;

@@ -15,6 +15,7 @@ const Quiz = () => {
     const [selectedOptions, setSelectedOptions] = useState([]);
     const [showVerifyAnswer, setShowVerifyAnswer] = useState(false);
     const [score, setScore] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
 
     const api_data = (data) => {
         const new_data = [];
@@ -48,6 +49,8 @@ const Quiz = () => {
         })
         .catch(error => {
             console.error(error);          
+        }).finally(() => {
+            setIsLoading(false);
         });
     }
     }, [category, difficulty]);
@@ -110,7 +113,9 @@ const Quiz = () => {
 
     return (
       <QuizContainer>
-        {currentQIndex < quiz.length ? (
+        {isLoading ? (
+        <p>Loading...</p>
+      ) : currentQIndex < quiz.length ? (
             <CardContainer>
                 {/* <p>{quiz[currentQIndex].id}</p> */}
                 <Question>{quiz[currentQIndex].question}</Question>
@@ -131,11 +136,15 @@ const Quiz = () => {
                 <VerifyAnswer />
                 <SubmitButton disabled={!showVerifyAnswer} onClick={handleNextQuestion}>Next</SubmitButton>
             </CardContainer>
-        ):(<ResultContainer>
-            <h1>End of Quiz</h1>
-            <h2>Your final score is: {score}</h2>
-            <h2>Total number of questions: {currentQIndex}</h2>
-            </ResultContainer>)
+        ):(
+            quiz.length > 0 && (
+              <ResultContainer>
+                <h1>End of Quiz</h1>
+                <h2>Your final score is: {score}</h2>
+                <h2>Total number of questions: {currentQIndex}</h2>
+              </ResultContainer>
+            )
+          )
         }
 
       </QuizContainer>
